@@ -1,0 +1,38 @@
+name = "graphql-studio"
+version = "1.0.0"
+author = "IndraMesh"
+license = "Apache-2.0"
+api_version = "1.0.0"
+# Phase 304 (GQL-05): the studio is entirely a frontend contribution; the plugin
+# declares no backend capability interface (and so no task_type/connector/etc.).
+capabilities = []
+module = "module"
+# Phase 304 (GQL-06, D-15/D-16/D-18): activating this plugin is the runtime
+# switch that unlocks the HTTP GraphQL endpoint `/api/v1/graphql` in production.
+# Core reads only this boolean and never names a plugin (D-18).
+enables_http_graphql = true
+# Phase 304 (assumption A2, aligned with CLEAN-03): active on first discovery so
+# a fresh install serves `/api/v1/graphql` until an administrator deactivates it
+# -- which is exactly why the production-only warning (D-18) exists.
+active_by_default = true
+
+[frontend]
+# The lightweight registration bundle: a page plus a Tools nav item. Plan 304-04
+# owns this build; the heavy editor payload is deferred (below).
+bundle = "static/graphql-studio.js"
+extension_points = ["pages", "navItems"]
+
+# Phase 304 (GQL-05/D-14): the heavy GraphiQL/Monaco editor payload, fetched only
+# on explicit navigation through the Phase-303 deferred-module contract. Plan
+# 304-05 produces the real self-contained file at this path.
+[frontend.deferred_assets]
+studio = "static/graphql-studio-heavy.js"
+
+# Phase 304 (Carry-06): a plugin-OWNED permission only. Saved queries and every
+# `saved-queries:*` permission stay Core; re-declaring a Core permission name
+# would refuse the whole plugin (SEAM-01/D-04).
+[[permissions]]
+resource = "graphql-studio"
+action = "use"
+default_roles = ["Administrator", "Editor"]
+description = "Open and use the GraphQL Studio plugin page."

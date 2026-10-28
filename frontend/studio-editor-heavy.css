@@ -1,0 +1,16 @@
+/*
+ * GraphiQL forces `.monaco-editor { position: absolute !important }` but leaves
+ * the operation editor's `.graphiql-editor` wrapper unpositioned (it assumes a
+ * full-viewport page). Embedded in the scrolling host layout the editor then
+ * resolves its containing block outside the scroll container: its text does not
+ * scroll with the page and escapes `.graphiql-container`'s overflow clip.
+ * Anchor every editor to its own wrapper.
+ */
+.graphiql-container .graphiql-editor {
+  position: relative;
+}
+
+/* The footer only carries the invisible editor bridge. */
+.graphiql-container .graphiql-footer:empty {
+  display: none;
+}
