@@ -50,7 +50,7 @@ plugin owns only the editor. The GraphQL endpoint (`/api/v1/graphql`), the saved
 every `saved-queries:*` permission and query execution stay Core; the studio calls them through the
 Core REST `/saved-queries` endpoints and the GraphQL endpoint.
 
-- Manifest: `plugin.toml` (`capabilities = []`, `active_by_default = true`,
+- Manifest: `plugin.toml` (`capabilities = []`, `active_by_default = false`,
   `enables_http_graphql = true`).
 - Backend: `module.py` — a deliberately capability-free `IndraMeshPlugin` (load/unload, health
   check). It owns no Core route, no table and no database branch.
@@ -74,6 +74,13 @@ re-declares no Core permission — saving and executing saved queries keeps its 
   makes Core's per-request gate serve `/api/v1/graphql` in production **only while this plugin is
   active**. Deactivating the plugin hides the endpoint in production (a non-production stack is
   unchanged). Core reads only the boolean and never names a plugin.
+- **Installed does not mean active:** the manifest declares `active_by_default = false`, so a fresh
+  installation is listed but stays inactive; an administrator activates it deliberately, and only
+  that activation opens `/api/v1/graphql` on a production stack. Updating or reinstalling never
+  deactivates an existing active studio — the manifest default applies on first discovery only. If
+  you do not need the studio on a production instance, deactivate it once.
+- **Integration surface:** `/public/api/v1/graphql` is the public integration endpoint and does not
+  depend on this plugin; the plugin owns only the editor for the internal `/api/v1/graphql`.
 - No env key, secret, LLM requirement or network change is added by this plugin.
 
 ## Task types

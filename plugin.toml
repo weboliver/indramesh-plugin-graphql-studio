@@ -1,5 +1,5 @@
 name = "graphql-studio"
-version = "1.0.0"
+version = "1.0.1"
 author = "IndraMesh"
 license = "Apache-2.0"
 api_version = "1.0.0"
@@ -11,10 +11,13 @@ module = "module"
 # switch that unlocks the HTTP GraphQL endpoint `/api/v1/graphql` in production.
 # Core reads only this boolean and never names a plugin (D-18).
 enables_http_graphql = true
-# Phase 304 (assumption A2, aligned with CLEAN-03): active on first discovery so
-# a fresh install serves `/api/v1/graphql` until an administrator deactivates it
-# -- which is exactly why the production-only warning (D-18) exists.
-active_by_default = true
+# Installing the plugin must not open an internal endpoint on its own: the
+# activation is the deliberate step of an administrator, and only then does the
+# production gate in `backend/app/graphql/router.py` serve `/api/v1/graphql`.
+# This manifest default applies on FIRST DISCOVERY only -- an existing
+# installation keeps its current row, so an already-active studio stays active
+# (D-11). The production-only UI warning (D-18) continues to explain the flag.
+active_by_default = false
 
 [frontend]
 # The lightweight registration bundle: a page plus a Tools nav item. Plan 304-04
