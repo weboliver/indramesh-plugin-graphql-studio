@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.1] - 2026-11-09
+
+### Changed
+
+- A fresh installation is inactive until an administrator activates it, so installing the plugin no longer opens the internal `/api/v1/graphql` endpoint on a production instance by itself. Existing installations stay active; if you do not need the studio on a production instance, deactivate it once.
 
 ## [1.0.0] - 2026-11-01
 
